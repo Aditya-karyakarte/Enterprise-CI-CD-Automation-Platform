@@ -1,0 +1,5 @@
+---
+- name: Deploy Project Arbor
+  hosts: web
+  roles:
+    - deploy

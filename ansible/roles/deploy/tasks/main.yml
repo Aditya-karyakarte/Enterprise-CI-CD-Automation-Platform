@@ -1,0 +1,20 @@
+---
+- name: Start the container from the built image
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: "arbor-web:{{ image_tag }}"
+    pull: never
+    state: started
+    recreate: true
+    restart_policy: unless-stopped
+    published_ports:
+      - "{{ host_port }}:80"
+
+- name: Wait until the site answers
+  ansible.builtin.uri:
+    url: "http://localhost:{{ host_port }}/"
+    status_code: 200
+  register: health
+  retries: 10
+  delay: 3
+  until: health.status == 200
